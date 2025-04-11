@@ -50,12 +50,56 @@ class Project {
     }
 }
 
-const projectName = 'default';
-const project = new Project(projectName);
+class ToDoApp {
+    constructor() {
+        this.projects = {};
+    }
+    addProject(projectName) {
+        if (this.projects[projectName]) {
+            console.log('Project already exits');
+        }
+        else { this.projects[projectName] = new Project(projectName); }
+    }
+    listProjects() {
+        Object.keys(this.projects).forEach(project => console.log(project));
+     }
 
-project.addTask('Test','2025-04-12', 'Test #1');
-project.addTask('2nd test', '2025-05-12', 'Test #2');
-project.listTasks().forEach(taskString => console.log(taskString));
-project.toggleTaskCompleted(1);
-project.listTasks().forEach(taskString => console.log(taskString));
-console.log(project.showTaskDetails(0));
+    addTaskToProject(projectName, title, dueDate, description) {
+        const project = this.projects[projectName]; 
+        if(project) {
+            project.addTask(title, dueDate, description);
+        }
+    }
+    listProjectTasks(projectName) {
+        const project = this.projects[projectName];
+        if (project) {
+            project.listTasks().forEach(taskString => console.log(taskString));
+        }
+    }
+    toggleProjectTaskCompleted(projectName, taskIndex) {
+        const project = this.projects[projectName];
+        if (project) {
+            project.toggleTaskCompleted(taskIndex);
+        }
+    }
+    showTaskDetails(projectName, taskIndex) {
+        const project = this.projects[projectName];
+        if (project) {
+            const detail = project.showTaskDetails(taskIndex);
+            console.log(detail);
+        }
+    }
+}
+
+const app = new ToDoApp;
+
+const projectName = 'default';
+app.addProject(projectName);
+app.addTaskToProject(projectName, 'Test','2025-04-12', 'Test #1');
+app.addTaskToProject(projectName, '2nd test', '2025-05-12', 'Test #2');
+app.listProjectTasks(projectName);
+app.toggleProjectTaskCompleted(projectName, 1);
+app.listProjectTasks(projectName);
+app.showTaskDetails(projectName, 0);
+
+app.listProjects();
