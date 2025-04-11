@@ -1,50 +1,23 @@
-// import { parse, isValid, format } from 'date-fns';
-
-function makeTodo() {
-    const attr = ['title', 'description', 'dueDate', 'priority'];
-
-    const todo = attr.reduce((acc, curr) => {
-        acc[curr] = "";
-        return acc;
-    }, {});
-
-    return todo;
-}
-
-function storeProject(details) {
-    const todo = details.todo;
-    let projectName = details.projectName;
-    const projects = [];
-    const project1 = {
-        name: 'default',
-        tasks: [],
+class Task {
+    constructor(title, dueDate, description) {
+        this.title = title;
+        this.dueDate = dueDate ? new Date(dueDate) : null;
+        this.description = description;
+        this.complete = false;
     }
-
-    projects.push(project1);
-
-    if (projectName === "" || projectName === null) {
-        projectName = 'default';
-    }    
-
-    for (const project of projects) {
-        if (project.name === projectName) {
-            project.tasks.push(todo);
-        } 
+    toggleCompleted() { this.complete = !this.complete };
+    getCompletedStatus() {
+        const completedStatus = this.complete ? '√' : 'x';
+        return completedStatus;
     }
-    console.log(projects);
-}
-
-function controlUserInterface() {
-    const choice = Number(prompt('Choices:\n1. Add a to do'));
-
-    if (choice === 1) {
-        const todo = makeTodo();
-        for (const attr in todo) {
-            todo[attr] = prompt(`Enter ${attr}`);
-        }
-        const projectName = prompt('Enter project Name:');
-        storeProject({projectName, todo});
+    getDueDate() {
+        const due = this.dueDate ? new Date(this.dueDate).toDateString() : 'No due date';
+        return due;
+    }
+    showTask() {
+        return `[${this.getCompletedStatus()}] ${this.title} Due: ${this.getDueDate()}`;
+    }
+    showDetail() {
+        return this.showTask() + `\n${this.description}`;
     }
 }
-
-controlUserInterface();
