@@ -27,67 +27,90 @@ class Project {
         this.name = name;
         this.tasks = [];
     }
-    addTask(title, dueDate, description) {
-        const task = new Task(title, dueDate, description)
+    addTask(task) {
         this.tasks.push(task);
+    }
+    getTask(index) {
+        return this.tasks[index];
     }
     listTasks() {
         return this.tasks.map((task, index) => `${index + 1}. ${task.showTask()}`);
     }
-    showTaskDetails(index) {
-        let detail = "";
-        this.tasks.forEach((task, i) => {
-            if (i === index) {
-                detail = task.showDetail();
-            }
-        });
-        return detail;
+}
+
+class ProjectManager {
+    constructor() {
+        this.projects = {};
     }
-    toggleTaskCompleted(index) {
-        this.tasks.forEach((task, i) => {
-            if (i === index) { task.toggleCompleted(); }
-        });
+    getProject(projectName) {
+        return this.projects[projectName];
+    }
+    addProject(projectName) {
+        if (this.projects[projectName]) {
+            console.log(`Project: ${projectName} already exits.`);
+        }
+        else {
+            this.projects[projectName] = new Project(projectName);
+        }
+    }
+    listProjects() {
+        return Object.keys(this.projects);
+    }
+}
+
+class TaskManager {
+    constructor() { }
+    addTask(project, title, dueDate, description) {
+        const task = new Task(title, dueDate, description);
+        project.addTask(task);
+    }
+    toggleTaskCompleted(project, taskIndex) {
+        const task = project.getTask(taskIndex);
+        task.toggleCompleted();
+    }
+    getTaskDetails(project, taskIndex) {
+        const task = project.getTask(taskIndex);
+        return task ? task.showDetail() : 'Task not found.';
+    }
+    listTasks(project) {
+        return project.listTasks();
     }
 }
 
 class ToDoApp {
     constructor() {
-        this.projects = {};
+        this.projectManager = new ProjectManager;
+        this.taskManager = new TaskManager;
     }
-    addProject(projectName) {
-        if (this.projects[projectName]) {
-            console.log('Project already exits');
-        }
-        else { this.projects[projectName] = new Project(projectName); }
+    addProject(name) {
+        this.projectManager.addProject(name);
     }
-    listProjects() {
-        Object.keys(this.projects).forEach(project => console.log(project));
-     }
-
     addTaskToProject(projectName, title, dueDate, description) {
-        const project = this.projects[projectName]; 
-        if(project) {
-            project.addTask(title, dueDate, description);
+        const project = this.projectManager.getProject(projectName);
+        if (project) {
+            this.taskManager.addTask(project, title, dueDate, description);
         }
     }
-    listProjectTasks(projectName) {
-        const project = this.projects[projectName];
+    toggleTaskCompleted(projectName, taskIndex) {
+        const project = this.projectManager.getProject(projectName);
         if (project) {
-            project.listTasks().forEach(taskString => console.log(taskString));
-        }
-    }
-    toggleProjectTaskCompleted(projectName, taskIndex) {
-        const project = this.projects[projectName];
-        if (project) {
-            project.toggleTaskCompleted(taskIndex);
+            this.taskManager.toggleTaskCompleted(project, taskIndex);
         }
     }
     showTaskDetails(projectName, taskIndex) {
-        const project = this.projects[projectName];
+        const project = this.projectManager.getProject(projectName);
         if (project) {
-            const detail = project.showTaskDetails(taskIndex);
-            console.log(detail);
+            console.log(this.taskManager.getTaskDetails(project, taskIndex));
         }
+    }
+    listProjectTasks(projectName) {
+        const project = this.projectManager.getProject(projectName);
+        if (project) {
+            this.taskManager.listTasks(project).forEach(taskString => console.log(taskString));
+        }
+    }
+    listAllProjects() {
+        this.projectManager.listProjects().forEach(name => console.log(name));
     }
 }
 
@@ -95,11 +118,11 @@ const app = new ToDoApp;
 
 const projectName = 'default';
 app.addProject(projectName);
-app.addTaskToProject(projectName, 'Test','2025-04-12', 'Test #1');
+app.addTaskToProject(projectName, 'Test', '2025-04-12', 'Test #1');
 app.addTaskToProject(projectName, '2nd test', '2025-05-12', 'Test #2');
 app.listProjectTasks(projectName);
-app.toggleProjectTaskCompleted(projectName, 1);
+app.toggleTaskCompleted(projectName, 1);
 app.listProjectTasks(projectName);
 app.showTaskDetails(projectName, 0);
 
-app.listProjects();
+app.listAllProjects();
