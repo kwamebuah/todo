@@ -23,7 +23,7 @@ class Task {
 }
 
 class Project {
-    constructor(name) {
+    constructor({ name }) {
         this.name = name;
         this.tasks = [];
     }
@@ -50,7 +50,7 @@ class ProjectManager {
             console.log(`Project: ${projectName} already exits.`);
         }
         else {
-            this.projects[projectName] = new Project(projectName);
+            this.projects[projectName] = new Project({ name: projectName });
         }
     }
     listProjects() {
