@@ -1,5 +1,5 @@
 class Task {
-    constructor(title, dueDate, description) {
+    constructor({ title, dueDate, description }) {
         this.title = title;
         this.dueDate = dueDate ? new Date(dueDate) : null;
         this.description = description;
@@ -61,7 +61,7 @@ class ProjectManager {
 class TaskManager {
     constructor() { }
     addTask(project, title, dueDate, description) {
-        const task = new Task(title, dueDate, description);
+        const task = new Task({ title, dueDate, description });
         project.addTask(task);
     }
     toggleTaskCompleted(project, taskIndex) {
