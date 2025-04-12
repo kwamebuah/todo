@@ -60,8 +60,8 @@ class ProjectManager {
 
 class TaskManager {
     constructor() { }
-    addTask(project, title, dueDate, description) {
-        const task = new Task({ title, dueDate, description });
+    addTask(project, taskData) {
+        const task = new Task(taskData);
         project.addTask(task);
     }
     toggleTaskCompleted(project, taskIndex) {
@@ -85,10 +85,10 @@ class ToDoApp {
     addProject(name) {
         this.projectManager.addProject(name);
     }
-    addTaskToProject(projectName, title, dueDate, description) {
+    addTaskToProject(projectName, taskData) {
         const project = this.projectManager.getProject(projectName);
         if (project) {
-            this.taskManager.addTask(project, title, dueDate, description);
+            this.taskManager.addTask(project, taskData);
         }
     }
     toggleTaskCompleted(projectName, taskIndex) {
@@ -118,8 +118,8 @@ const app = new ToDoApp;
 
 const projectName = 'default';
 app.addProject(projectName);
-app.addTaskToProject(projectName, 'Test', '2025-04-12', 'Test #1');
-app.addTaskToProject(projectName, '2nd test', '2025-05-12', 'Test #2');
+app.addTaskToProject(projectName, { title: 'Test', dueDate: '2025-04-12', description: 'Test #1: Use objects' });
+app.addTaskToProject(projectName, { title: '2nd test', dueDate: '2025-05-12', description: 'Test #2: Another one' });
 app.listProjectTasks(projectName);
 app.toggleTaskCompleted(projectName, 1);
 app.listProjectTasks(projectName);
