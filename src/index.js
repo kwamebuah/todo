@@ -42,6 +42,15 @@ class Project {
     listTasks() {
         return this.tasks.map((task, index) => `${index + 1}. ${task.showTask()}`);
     }
+    deleteTask(index) {
+        try {
+            this.tasks.splice(index, 1);
+            return true;
+        }
+        catch {
+            return false;
+        }
+    }
 }
 
 class ProjectManager {
@@ -81,6 +90,9 @@ class TaskManager {
     listTasks(project) {
         return project.listTasks();
     }
+    deleteTask(project, taskIndex) {
+        return project.deleteTask(project, taskIndex);
+    }
 }
 
 class ToDoApp {
@@ -114,6 +126,11 @@ class ToDoApp {
     listAllProjects() {
         return this.projectManager.listProjects();
     }
+    deleteTask(projectName, taskIndex) {
+        const project = this.projectManager.getProject(projectName);
+        const success =  project ? this.taskManager.deleteTask(project, taskIndex) : false;
+        return success ? 'Sucessfully deleted' : 'Failed to delete task';
+    }
 }
 
 const app = new ToDoApp;
@@ -139,6 +156,10 @@ function callUserInterface() {
 
     console.log(app.showTaskDetails(projectName, 0));
     app.toggleTaskCompleted(projectName, 0);
+    app.listProjectTasks(projectName).forEach(task => console.log(task));
+
+    console.log(app.deleteTask(projectName, 0));
+
     app.listProjectTasks(projectName).forEach(task => console.log(task));
 }
 
