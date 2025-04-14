@@ -48,12 +48,8 @@ class Project {
         return this.tasks.map((task, index) => `${index + 1}. ${task.showTask()}`);
     }
     deleteTask(index) {
-        try {
+        if (index >= 0 && index <= this.tasks.length) {
             this.tasks.splice(index, 1);
-            return true;
-        }
-        catch {
-            return false;
         }
     }
 }
@@ -96,7 +92,7 @@ class TaskManager {
         return project.listTasks();
     }
     deleteTask(project, taskIndex) {
-        return project.deleteTask(project, taskIndex);
+        project.deleteTask(taskIndex);
     }
     editTask(project, taskIndex, updates) {
         const task = project.getTask(taskIndex);
@@ -139,8 +135,9 @@ class ToDoApp {
     }
     deleteTask(projectName, taskIndex) {
         const project = this.projectManager.getProject(projectName);
-        const success =  project ? this.taskManager.deleteTask(project, taskIndex) : false;
-        return success ? 'Sucessfully deleted' : 'Failed to delete task';
+        if (project) {
+            this.taskManager.deleteTask(project, taskIndex);
+        }
     }
     editTask(projectName, taskIndex, updates) {
         const project = this.projectManager.getProject(projectName);
@@ -206,9 +203,23 @@ function callUserInterface() {
         console.log('✏️ Task updated!');
         console.log(app.showTaskDetails(projectName, taskIndex));
     }
-    console.log(app.deleteTask(projectName, 0));
 
-    app.listProjectTasks(projectName).forEach(task => console.log(task));
+    const deleteConfirm = prompt('Do you want to delete a task? (yes/no)', 'no');
+    if (deleteConfirm.toLocaleLowerCase() === 'yes') {
+        const taskCount = app.listProjectTasks(projectName).length;
+
+        const taskNumberToDelete = Number(prompt(`Enter task number (1 - ${taskCount}) to delete:`));
+        if (isNaN(taskNumberToDelete) || taskNumberToDelete < 1 || taskNumberToDelete > taskCount) {
+            alert('Invalid number.');
+            return;
+        }
+
+        const indexToDelete = taskNumberToDelete - 1;
+        app.deleteTask(projectName, indexToDelete);
+        console.log(`🗑️ Task #${taskNumberToDelete} deleted.`);
+        console.log('📋 Updated Task List:');
+        app.listProjectTasks(projectName).forEach(task => console.log(task));
+    }
 }
 
 callUserInterface();
