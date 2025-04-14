@@ -138,18 +138,8 @@ function callUserInterface() {
     app.listProjectTasks(projectName).forEach(task => console.log(task));
 
     console.log(app.showTaskDetails(projectName, 0));
+    app.toggleTaskCompleted(projectName, 0);
+    app.listProjectTasks(projectName).forEach(task => console.log(task));
 }
 
 callUserInterface();
-
-// const projectName = 'default';
-// app.addProject(projectName);
-// app.addTaskToProject(projectName, { title: 'Test', dueDate: '2025-04-12', description: 'Test #1: Use objects' });
-// app.addTaskToProject(projectName, { title: '2nd test', dueDate: '2025-05-12', description: 'Test #2: Another one' });
-// app.listProjectTasks(projectName);
-// app.toggleTaskCompleted(projectName, 1);
-// app.listProjectTasks(projectName);
-// app.showTaskDetails(projectName, 0);
-
-// app.listAllProjects();
-
