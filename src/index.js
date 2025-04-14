@@ -1,3 +1,9 @@
+const taskTemplate = {
+    title: { required: true, prompt: 'Enter task title:' },
+    dueDate: { required: false, prompt: 'Enter due date (YYYY-MM-DD) or leave blank:' },
+    description: { required: false, prompt: 'Provide a task description:' },
+};
+
 class Task {
     constructor({ title, dueDate, description }) {
         this.title = title;
@@ -116,13 +122,14 @@ class ToDoApp {
 
 const app = new ToDoApp;
 
-const projectName = 'default';
-app.addProject(projectName);
-app.addTaskToProject(projectName, { title: 'Test', dueDate: '2025-04-12', description: 'Test #1: Use objects' });
-app.addTaskToProject(projectName, { title: '2nd test', dueDate: '2025-05-12', description: 'Test #2: Another one' });
-app.listProjectTasks(projectName);
-app.toggleTaskCompleted(projectName, 1);
-app.listProjectTasks(projectName);
-app.showTaskDetails(projectName, 0);
+// const projectName = 'default';
+// app.addProject(projectName);
+// app.addTaskToProject(projectName, { title: 'Test', dueDate: '2025-04-12', description: 'Test #1: Use objects' });
+// app.addTaskToProject(projectName, { title: '2nd test', dueDate: '2025-05-12', description: 'Test #2: Another one' });
+// app.listProjectTasks(projectName);
+// app.toggleTaskCompleted(projectName, 1);
+// app.listProjectTasks(projectName);
+// app.showTaskDetails(projectName, 0);
 
-app.listAllProjects();
+// app.listAllProjects();
+
