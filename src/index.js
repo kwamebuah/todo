@@ -8,7 +8,7 @@ class Task {
     constructor({ title, dueDate, description }) {
         this.title = title;
         this.dueDate = dueDate ? new Date(dueDate) : null;
-        this.description = description;
+        this.description = description?.trim() ?? '(No description provided)';
         this.complete = false;
     }
     toggleCompleted() { this.complete = !this.complete };
