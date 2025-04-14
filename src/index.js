@@ -122,6 +122,30 @@ class ToDoApp {
 
 const app = new ToDoApp;
 
+function callUserInterface() {
+    const projectName = prompt('Enter a project name:', 'default');
+    const taskData = {};
+    
+    for (const [data, config] of Object.entries(taskTemplate)) {
+        const response = prompt(config.prompt);
+        if (config.required && !response) {
+            alert(`${data} is required`);
+            return;
+        }
+        taskData[data] = response || null;
+    }
+    app.addProject(projectName);
+    app.addTaskToProject(projectName, taskData);
+    console.log(`✅ Task added to project "${projectName}"`);
+
+    console.log("📋 Current Tasks:");
+    app.listProjectTasks(projectName);
+
+    app.showTaskDetails(projectName, 0);
+}
+
+callUserInterface();
+
 // const projectName = 'default';
 // app.addProject(projectName);
 // app.addTaskToProject(projectName, { title: 'Test', dueDate: '2025-04-12', description: 'Test #1: Use objects' });
