@@ -105,18 +105,14 @@ class ToDoApp {
     }
     showTaskDetails(projectName, taskIndex) {
         const project = this.projectManager.getProject(projectName);
-        if (project) {
-            console.log(this.taskManager.getTaskDetails(project, taskIndex));
-        }
+        return project ? this.taskManager.getTaskDetails(project, taskIndex) : 'Project not found.';
     }
     listProjectTasks(projectName) {
         const project = this.projectManager.getProject(projectName);
-        if (project) {
-            this.taskManager.listTasks(project).forEach(taskString => console.log(taskString));
-        }
+        return project ? this.taskManager.listTasks(project) : ['Project not found.'];
     }
     listAllProjects() {
-        this.projectManager.listProjects().forEach(name => console.log(name));
+        return this.projectManager.listProjects();
     }
 }
 
@@ -125,7 +121,7 @@ const app = new ToDoApp;
 function callUserInterface() {
     const projectName = prompt('Enter a project name:', 'default');
     const taskData = {};
-    
+
     for (const [data, config] of Object.entries(taskTemplate)) {
         const response = prompt(config.prompt);
         if (config.required && !response) {
@@ -139,9 +135,9 @@ function callUserInterface() {
     console.log(`✅ Task added to project "${projectName}"`);
 
     console.log("📋 Current Tasks:");
-    app.listProjectTasks(projectName);
+    app.listProjectTasks(projectName).forEach(task => console.log(task));
 
-    app.showTaskDetails(projectName, 0);
+    console.log(app.showTaskDetails(projectName, 0));
 }
 
 callUserInterface();
