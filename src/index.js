@@ -100,6 +100,13 @@ class TaskManager {
             task.edit(updates);
         }
     }
+    transferTaskToProject(project1, project2, taskIndex) {
+        const task = project1.getTask(taskIndex);
+        if (task) {
+            project2.addTask(task);
+            project1.deleteTask(taskIndex);
+        }
+    }
 }
 
 class ToDoApp {
@@ -145,6 +152,11 @@ class ToDoApp {
             this.taskManager.editTask(project, taskIndex, updates);
         }
     }
+    transferTaskToProject(project1, project2, taskIndex) {
+        if (project1 && project2) {
+            this.taskManager.transferTaskToProject(project1, project2, taskIndex);
+        }
+    }
 }
 
 function callUserInterface() {
@@ -163,8 +175,9 @@ function callUserInterface() {
 6. Toggle Task Completion
 7. Show Task Details
 8. List All Projects
-9. Quit
-Enter your choice (1-9):`
+9. Transfer Task to Another Project
+10. Quit
+Enter your choice (1-10):`
         );
 
         switch (choice) {
@@ -275,7 +288,7 @@ Enter your choice (1-9):`
                     alert('Project not found.');
                     break;
                 }
-                
+
                 const taskCount = app.listProjectTasks(projectName).length;
                 const taskNum = Number(prompt(`Enter task number (1 - ${taskCount}) to view details:`));
                 if (isNaN(taskNum) || taskNum < 1 || taskNum > taskCount) {
@@ -293,6 +306,31 @@ Enter your choice (1-9):`
                 break;
             }
             case '9': {
+                const project1Name = prompt('Enter project name containing task:');
+                const project1 = app.projectManager.getProject(project1Name);
+                if (!project1) {
+                    alert('Project not found.');
+                    break;
+                }
+                const taskCount = app.listProjectTasks(project1Name).length;
+                const taskNum = Number(prompt(`Enter task number (1 - ${taskCount}) to transfer:`));
+                if (isNaN(taskNum) || taskNum < 1 || taskNum > taskCount) {
+                    alert('Invalid number.');
+                    break;
+                }
+                const index = taskNum - 1;
+
+                const project2Name = prompt('Enter project name to transfer task:');
+                const project2 = app.projectManager.getProject(project2Name);
+                if (!project2) {
+                    alert('Project not found.');
+                    break;
+                }
+                app.transferTaskToProject(project1, project2, index);
+                console.log(`Task transfered from ${project1Name} to ${project2Name}.`);
+                break;
+            }
+            case '10': {
                 exit = true;
                 console.log('👋 Exiting To-Do App. Goodbye!');
                 break;
