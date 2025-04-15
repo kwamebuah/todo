@@ -147,78 +147,159 @@ class ToDoApp {
     }
 }
 
-const app = new ToDoApp;
-
 function callUserInterface() {
-    const projectName = prompt('Enter a project name:', 'default');
-    const taskData = {};
+    const app = new ToDoApp;
 
-    for (const [data, config] of Object.entries(taskTemplate)) {
-        const response = prompt(config.prompt);
-        if (config.required && !response) {
-            alert(`${data} is required`);
-            return;
-        }
-        taskData[data] = response || null;
-    }
-    app.addProject(projectName);
-    app.addTaskToProject(projectName, taskData);
-    console.log(`✅ Task added to project "${projectName}"`);
+    let exit = false;
 
-    console.log("📋 Current Tasks:");
-    const taskList = app.listProjectTasks(projectName);
-    taskList.forEach(task => console.log(task));
+    while (!exit) {
+        const choice = prompt(
+            `📝 To-Do Menu:
+1. Add Project
+2. Add Task to Project
+3. List Project Tasks
+4. Edit Task
+5. Delete Task
+6. Toggle Task Completion
+7. Show Task Details
+8. List All Projects
+9. Quit
+Enter your choice (1-9):`
+        );
 
-    console.log(app.showTaskDetails(projectName, 0));
-    app.toggleTaskCompleted(projectName, 0);
-    app.listProjectTasks(projectName).forEach(task => console.log(task));
-
-    const editConfirm = prompt('Do you want to edit the task? (yes/no)', 'no');
-    if (editConfirm.toLocaleLowerCase() === 'yes') {
-        const taskCount = taskList.length;
-
-        let taskNumber = Number(prompt(`Enter task number (1 - ${taskCount}) to edit:`, 10));
-        if (isNaN(taskNumber) || taskNumber < 1 || taskNumber > taskCount) {
-            alert('Invalid task number.');
-            return;
-        }
-
-        const taskIndex = taskNumber - 1;
-        const taskDetails = app.showTaskDetails(projectName, taskIndex);
-        console.log(`📝Editing Task #${taskNumber}:`);
-        console.log(taskDetails);
-
-        const updates = {};
-        const project = app.projectManager.getProject(projectName);
-        const task = project.getTask(taskIndex);
-        for (const [field, config] of Object.entries(taskTemplate)) {
-            const currentVal = task[field] ?? '';
-            const newVal = prompt(`Edit ${field} (current: ${currentVal}) or press Enter to keep:`);
-
-            if (newVal !== '') {
-                updates[field] = newVal;
+        switch (choice) {
+            case '1': {
+                const projectName = prompt('Enter a new project name:');
+                app.addProject(projectName);
+                console.log(`✅ Project "${projectName}" added.`);
+                break;
             }
+            case '2': {
+                const projectName = prompt('Enter the project name to add task to:');
+                const project = app.projectManager.getProject(projectName);
+                if (!project) {
+                    alert('Project not found');
+                    break;
+                }
+                const taskData = {};
+                for (const [field, config] of Object.entries(taskTemplate)) {
+                    const response = prompt(config.prompt);
+                    if (config.required && !response) {
+                        alert(`${field} is required`);
+                        return;
+                    }
+                    taskData[field] = response || null;
+                }
+                app.addTaskToProject(projectName, taskData);
+                console.log(`✅ Task added to project "${projectName}.`);
+                break;
+            }
+            case '3': {
+                const projectName = prompt('Enter the project name:');
+                const tasks = app.listProjectTasks(projectName);
+                tasks.forEach(task => console.log(task));
+                break;
+            }
+            case '4': {
+                const projectName = prompt('Enter the project name:');
+                const project = app.projectManager.getProject(projectName);
+                if (!project) {
+                    alert('Project not found.');
+                    break;
+                }
+
+                const taskCount = app.listProjectTasks(projectName).length;
+                const taskNum = Number(prompt(`Enter task number (1 - ${taskCount}) to edit:`));
+                if (isNaN(taskNum) || taskNum < 1 || taskNum > taskCount) {
+                    alert('Invalid task number.');
+                    break;
+                }
+                const taskIndex = taskNum - 1;
+                const task = project.getTask(taskIndex);
+
+                const updates = {};
+                for (const [field] of Object.entries(taskTemplate)) {
+                    const currentVal = task[field] ?? '';
+                    const newVal = prompt(`Edit ${field} (current: ${currentVal}) or press Enter to keep:`);
+
+                    if (newVal !== '') {
+                        updates[field] = newVal;
+                    }
+                }
+                app.editTask(projectName, taskIndex, updates);
+                console.log('✏️ Task updated!');
+                break;
+            }
+            case '5': {
+                const projectName = prompt('Enter project name:');
+                const project = app.projectManager.getProject(projectName);
+                if (!project) {
+                    alert('Project not found.');
+                    break;
+                }
+
+                const taskCount = app.listProjectTasks(projectName).length;
+                const taskNum = Number(prompt(`Enter task number (1 - ${taskCount}) to delete:`));
+                if (isNaN(taskNum) || taskNum < 1 || taskNum > taskCount) {
+                    alert('Invalid number.');
+                    break;
+                }
+                const index = taskNum - 1;
+                app.deleteTask(projectName, index);
+                console.log(`🗑️ Task #${taskNum} deleted.`);
+                break;
+            }
+            case '6': {
+                const projectName = prompt('Enter project name:');
+                const project = app.projectManager.getProject(projectName);
+                if (!project) {
+                    alert('Project not found.');
+                    break;
+                }
+
+                const taskCount = app.listProjectTasks(projectName).length;
+                const taskNum = Number(prompt(`Enter task number (1 - ${taskCount}) to toggle complete:`));
+                if (isNaN(taskNum) || taskNum < 1 || taskNum > taskCount) {
+                    alert('Invalid number.');
+                    break;
+                }
+                const index = taskNum - 1;
+                app.toggleTaskCompleted(projectName, index);
+                console.log(`✅ Task #${taskNum} toggled.`);
+                break;
+            }
+            case '7': {
+                const projectName = prompt('Enter project name:');
+                const project = app.projectManager.getProject(projectName);
+                if (!project) {
+                    alert('Project not found.');
+                    break;
+                }
+                
+                const taskCount = app.listProjectTasks(projectName).length;
+                const taskNum = Number(prompt(`Enter task number (1 - ${taskCount}) to view details:`));
+                if (isNaN(taskNum) || taskNum < 1 || taskNum > taskCount) {
+                    alert('Invalid number.');
+                    break;
+                }
+                const index = taskNum - 1;
+                console.log(app.showTaskDetails(projectName, index));
+                break;
+            }
+            case '8': {
+                const projects = app.listAllProjects();
+                console.log('📁 Projects:');
+                projects.forEach(project => console.log(project));
+                break;
+            }
+            case '9': {
+                exit = true;
+                console.log('👋 Exiting To-Do App. Goodbye!');
+                break;
+            }
+            default:
+                alert('Invalid option. Please choose between 1 and 9.');
         }
-        app.editTask(projectName, taskIndex, updates);
-        console.log('✏️ Task updated!');
-        console.log(app.showTaskDetails(projectName, taskIndex));
-    }
-
-    const deleteConfirm = prompt('Do you want to delete a task? (yes/no)', 'no');
-    if (deleteConfirm.toLocaleLowerCase() === 'yes') {
-        const taskCount = app.listProjectTasks(projectName).length;
-
-        const taskNumberToDelete = Number(prompt(`Enter task number (1 - ${taskCount}) to delete:`));
-        if (isNaN(taskNumberToDelete) || taskNumberToDelete < 1 || taskNumberToDelete > taskCount) {
-            alert('Invalid number.');
-            return;
-        }
-
-        const indexToDelete = taskNumberToDelete - 1;
-        app.deleteTask(projectName, indexToDelete);
-        console.log(`🗑️ Task #${taskNumberToDelete} deleted.`);
-        console.log('📋 Updated Task List:');
-        app.listProjectTasks(projectName).forEach(task => console.log(task));
     }
 }
 
