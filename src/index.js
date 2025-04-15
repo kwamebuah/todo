@@ -10,7 +10,7 @@ function callUserInterface() {
         const choice = prompt(
             `📝 To-Do Menu:
 1. Add Project
-2. Add Task to Project
+2. Add Task (goes to default project)
 3. List Project Tasks
 4. Edit Task
 5. Delete Task
@@ -30,12 +30,6 @@ Enter your choice (1-10):`
                 break;
             }
             case '2': {
-                const projectName = prompt('Enter the project name to add task to:');
-                const project = app.projectManager.getProject(projectName);
-                if (!project) {
-                    alert('Project not found');
-                    break;
-                }
                 const taskData = {};
                 for (const [field, config] of Object.entries(taskTemplate)) {
                     const response = prompt(config.prompt);
@@ -45,8 +39,9 @@ Enter your choice (1-10):`
                     }
                     taskData[field] = response || null;
                 }
-                app.addTaskToProject(projectName, taskData);
-                console.log(`✅ Task added to project "${projectName}.`);
+                
+                app.addTasktoDefaultProject(taskData);
+                console.log(`✅ Task added to project "${app.getDefaultProjectName()}".`);
                 break;
             }
             case '3': {

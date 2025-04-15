@@ -5,6 +5,17 @@ export class ToDoApp {
     constructor() {
         this.projectManager = new ProjectManager();
         this.taskManager = new TaskManager();
+        this.defaultProjectName = 'Default';
+        this.projectManager.addProject(this.defaultProjectName);
+    }
+
+    addTasktoDefaultProject(taskData) {
+        const project = this.projectManager.getProject(this.defaultProjectName);
+        this.taskManager.addTask(project, taskData);
+    }
+
+    getDefaultProjectName() {
+        return this.defaultProjectName;
     }
 
     addProject(name) {
