@@ -17,6 +17,7 @@ const addTaskBtn = document.getElementById('addTaskBtn');
 // Initial render
 renderProjectList();
 renderTaskList(currentProject);
+renderTaskForm();
 
 newProjectBtn.addEventListener('click', () => {
     const name = prompt('Enter new project name:');
@@ -28,23 +29,43 @@ newProjectBtn.addEventListener('click', () => {
     renderTaskList(currentProject);
 });
 
-addTaskBtn.addEventListener('click', () => {
-    const taskData = {
-        title: taskTitle.value.trim(),
-        dueDate: taskDue.value,
-        description: taskDesc.value.trim()
-    };
+function renderTaskForm() {
+    const formContainer = document.getElementById('dynamicTaskForm');
+    formContainer.innerHTML = '';
 
-    if (!taskData.title) {
-        alert('Task title is required.');
-        return;
+    for (const [key, config] of Object.entries(taskTemplate)) {
+        const input = document.createElement('input');
+        input.id = `task_${key}`;
+        input.placeholder = config.prompt;
+
+        if (key.toLowerCase().includes('date')) {
+            input.type = 'date';
+        }
+
+        formContainer.appendChild(input);
+    }
+}
+
+addTaskBtn.addEventListener('click', () => {
+    const taskData = {};
+
+    for (const [key, config] of Object.entries(taskTemplate)) {
+        const input = document.getElementById(`task_${key}`);
+        const value = input.value.trim();
+
+        if (config.required && !value) {
+            alert(`${config.prompt} is required.`);
+            return;
+        }
+
+        taskData[key] = value;
     }
 
     app.addTaskToProject(currentProject, taskData);
 
-    taskTitle.value = '';
-    taskDue.value = '';
-    taskDesc.value = '';
+    for (const key of Object.keys(taskTemplate)) {
+        document.getElementById(`task_${key}`).value = '';
+    }
 
     renderTaskList(currentProject);
 });
