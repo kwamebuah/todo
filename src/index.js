@@ -115,23 +115,17 @@ function renderTaskList(projectName) {
         const editBtn = document.createElement('button');
         editBtn.textContent = '✏️';
         editBtn.addEventListener('click', () => {
-            const detail = app.getTaskDetails(projectName, index);
-            const lines = detail.split('\n');
-            const [statusAndTitle, ...descLines] = lines;
-            const oldTask = {
-                title: statusAndTitle.replace(/^\[.\]\s*/, '').split(' Due: ')[0],
-                dueDate: '', // we can’t extract this from summary without parsing it
-                description: descLines.join('\n')
-            };
-
-            const newTitle = prompt('Edit Title:', oldTask.title);
-            const newDue = prompt('Edit Due Date (YYYY-MM-DD):', taskDue.value);
-            const newDesc = prompt('Edit Description:', oldTask.description);
+            const currentValues = app.getTaskDataForEdit(projectName, index);
+            if (!currentValues) return;
 
             const updates = {};
-            if (newTitle !== null) updates.title = newTitle;
-            if (newDue !== null) updates.dueDate = newDue;
-            if (newDesc !== null) updates.description = newDesc;
+            for (const [key, config] of Object.entries(taskTemplate)) {
+                const userInput = prompt(`Edit: ${config.prompt}`, currentValues[key]);
+                if (userInput !== null) {
+                    const trimmed = userInput.trim();
+                    updates[key] = trimmed;
+                }
+            }
 
             app.editTask(projectName, index, updates);
             renderTaskList(projectName);

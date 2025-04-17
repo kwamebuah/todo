@@ -1,5 +1,6 @@
 import { TaskManager } from "./taskManager.js";
 import { ProjectManager } from "./projectManager.js";
+import { taskTemplate } from './taskTemplate.js';
 
 export class ToDoApp {
     constructor() {
@@ -81,5 +82,21 @@ export class ToDoApp {
 
     addTasktoDefaultProject(taskData) {
         this.addTaskToProject(this.defaultProjectName, taskData);
-    }    
+    }
+    
+    getTaskDataForEdit(projectName, index) {
+        const project = this.projectManager.getProject(projectName);
+        const task = project?.getTask(index);
+    
+        if (!task) return null;
+    
+        const data = {};
+        for (const key of Object.keys(taskTemplate)) {
+            const value = task[key];
+            data[key] = value instanceof Date
+                ? value.toISOString().split('T')[0] // for date inputs
+                : value ?? '';
+        }
+        return data;
+    }
 }
