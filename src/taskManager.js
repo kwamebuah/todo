@@ -39,6 +39,11 @@ export class TaskManager {
             task.edit(updates);
         }
     }
+
+    getTaskCompletionStatus(project, taskIndex) {
+        const task = project.getTask(taskIndex);
+        return task?.complete ?? false;
+    }
     
     transferTaskToProject(project1, project2, taskIndex) {
         const task = project1.getTask(taskIndex);
