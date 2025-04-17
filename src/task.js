@@ -2,7 +2,7 @@ export class Task {
     constructor({ title, dueDate, description }) {
         this.title = title;
         this.dueDate = dueDate ? new Date(dueDate) : null;
-        this.description = description?.trim() ?? '(No description provided)';
+        this.description = description?.trim() || '(No description provided)';
         this.complete = false;
     }
 
@@ -29,6 +29,6 @@ export class Task {
     edit(updates) {
         if (updates.title !== undefined) { this.title = updates.title; }
         if (updates.dueDate !== undefined) { this.dueDate = updates.dueDate ? new Date(updates.dueDate) : null; }
-        if (updates.description !== undefined) { this.description = updates.description?.trim() ?? '(No description provided)'; }
+        if (updates.description !== undefined) { this.description = updates.description?.trim() || '(No description provided)'; }
     }
 }

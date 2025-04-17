@@ -51,7 +51,7 @@ addTaskBtn.addEventListener('click', () => {
 
     for (const [key, config] of Object.entries(taskTemplate)) {
         const input = document.getElementById(`task_${key}`);
-        const value = input.value.trim();
+        const value = input.value;
 
         if (config.required && !value) {
             alert(`${config.prompt} is required.`);
