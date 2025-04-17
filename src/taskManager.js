@@ -20,6 +20,11 @@ export class TaskManager {
         return task ? task.showDetail() : 'Task not found.';
     }
 
+    getTaskSummary(project, taskIndex) {
+        const task = project.getTask(taskIndex);
+        return task ? task.showTask() : 'Task not found.';
+    }
+
     listTasks(project) {
         return project.listTasks();
     }
