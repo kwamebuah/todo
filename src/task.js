@@ -7,7 +7,7 @@ export class Task {
     }
 
     toggleCompleted() { 
-        this.complete = !this.complete
+        this.complete = !this.complete;
     };
 
     getCompletedStatus() {
