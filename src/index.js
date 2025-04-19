@@ -18,7 +18,6 @@ const addTaskBtn = document.getElementById('addTaskBtn');
 // Initial render
 renderProjectList();
 renderTaskList(currentProject);
-renderTaskForm();
 
 newProjectBtn.addEventListener('click', () => {
     const modal = document.createElement('dialog');
@@ -28,7 +27,7 @@ newProjectBtn.addEventListener('click', () => {
     const p2 = document.createElement('p');
     const label = document.createElement('label');
     const input = document.createElement('input');
-    const subBtn = document.createElement('button');
+    const submitBtn = document.createElement('button');
     const cancelBtn = document.createElement('button');
 
     form.classList.add('new-project-form');
@@ -38,15 +37,15 @@ newProjectBtn.addEventListener('click', () => {
     label.textContent = 'Project Name: ';
     input.setAttribute('name', 'new-project');
     input.setAttribute('id', 'new-project');
-    subBtn.setAttribute('type', 'submit');
-    subBtn.textContent = 'Add';
+    submitBtn.setAttribute('type', 'submit');
+    submitBtn.textContent = 'Add';
     cancelBtn.setAttribute('value', 'cancel');
     cancelBtn.setAttribute('formmethod', 'dialog');
     cancelBtn.textContent = 'Cancel';
 
     p1.appendChild(label);
     p1.appendChild(input);
-    p2.appendChild(subBtn);
+    p2.appendChild(submitBtn);
     p2.appendChild(cancelBtn);
     form.appendChild(h3);
     form.appendChild(p1);
@@ -56,7 +55,7 @@ newProjectBtn.addEventListener('click', () => {
 
     modal.showModal();
 
-    subBtn.addEventListener('click', (event) => {
+    submitBtn.addEventListener('click', (event) => {
         event.preventDefault();
         const name = input.value;
         if (!name?.trim()) return;
@@ -70,12 +69,25 @@ newProjectBtn.addEventListener('click', () => {
     });
 });
 
-function renderTaskForm() {
-    const formContainer = document.getElementById('dynamicTaskForm');
-    formContainer.innerHTML = '';
+function openTaskModal() {
+    const modal = document.createElement('dialog');;
+    modal.classList.add('task-modal');
+
+    const form = document.createElement('form');
+
+    const h3 = document.createElement('h3');
+    h3.textContent = 'New Task';
+    form.appendChild(h3);
+
+    const inputs = {};
 
     for (const [key, config] of Object.entries(taskTemplate)) {
+        const p = document.createElement('p');
         const input = document.createElement('input');
+        const label = document.createElement('label');
+
+        label.setAttribute('for', `task_${key}`);
+        label.textContent = config.prompt;
         input.id = `task_${key}`;
         input.placeholder = config.prompt;
 
@@ -83,33 +95,68 @@ function renderTaskForm() {
             input.type = 'date';
         }
 
-        formContainer.appendChild(input);
+        inputs[key] = input;
+
+        p.appendChild(label);
+        p.appendChild(input);
+        form.appendChild(p);
     }
-}
 
-addTaskBtn.addEventListener('click', () => {
-    const taskData = {};
+    const p = document.createElement('p');
+    const submitBtn = document.createElement('button');
+    const cancelBtn = document.createElement('button');
 
-    for (const [key, config] of Object.entries(taskTemplate)) {
-        const input = document.getElementById(`task_${key}`);
-        const value = input.value;
+    submitBtn.type = 'submit';
+    submitBtn.textContent = 'Add';
+    submitBtn.disabled = true;
 
-        if (config.required && !value) {
-            alert(`${config.prompt} is required.`);
-            return;
+    cancelBtn.type = 'button';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', () => {
+        modal.close();
+        modal.remove();
+    });
+
+    p.appendChild(submitBtn);
+    p.appendChild(cancelBtn);
+    form.appendChild(p);
+
+    modal.appendChild(form);
+    document.body.appendChild(modal);
+    modal.show();
+
+    const validateForm = () => {
+        const isValid = Object.entries(taskTemplate).every(([key, config]) => {
+            if(!config.required) return true;
+            const val = inputs[key].value.trim();
+            return val !== '';
+        });
+
+        submitBtn.disabled = !isValid;
+    };
+
+    Object.values(inputs).forEach(input => {
+        input.addEventListener('input', validateForm);
+    });
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const taskData = {};
+        for (const [key] of Object.entries(taskTemplate)) {
+            taskData[key] = inputs[key].value;
         }
 
-        taskData[key] = value;
-    }
+        app.addTaskToProject(currentProject, taskData);
 
-    app.addTaskToProject(currentProject, taskData);
+        modal.close();
+        modal.remove();
 
-    for (const key of Object.keys(taskTemplate)) {
-        document.getElementById(`task_${key}`).value = '';
-    }
+        renderTaskList(currentProject);
+    });
+}
 
-    renderTaskList(currentProject);
-});
+addTaskBtn.addEventListener('click', openTaskModal);
 
 function renderProjectList() {
     projectListEl.innerHTML = '';

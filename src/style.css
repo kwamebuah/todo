@@ -49,3 +49,27 @@ button {
     margin: 0.3em 0;
     display: block;
 }
+
+dialog.task-modal {
+    padding: 1.5em;
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    max-width: 400px;
+    width: 100%;
+}
+
+.task-modal form p {
+    margin-bottom: 1em;
+}
+
+.task-modal form label {
+    display: block;
+    margin-bottom: 0.3em;
+}
+
+button:disabled {
+    background-color: #ccc;
+    color: #666;
+    cursor: not-allowed;
+}
