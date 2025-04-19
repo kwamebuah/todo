@@ -127,7 +127,7 @@ function openTaskModal() {
 
     const validateForm = () => {
         const isValid = Object.entries(taskTemplate).every(([key, config]) => {
-            if(!config.required) return true;
+            if (!config.required) return true;
             const val = inputs[key].value.trim();
             return val !== '';
         });
@@ -157,6 +157,82 @@ function openTaskModal() {
 }
 
 addTaskBtn.addEventListener('click', openTaskModal);
+
+function openEditTaskModal(projectName, taskIndex) {
+    const currentValues = app.getTaskDataForEdit(projectName, taskIndex);
+    if (!currentValues) return;
+
+    const modal = document.createElement('dialog');
+    modal.classList.add('task-modal');
+
+    const form = document.createElement('form');
+
+    const h3 = document.createElement('h3');
+    h3.textContent = 'Edit Task';
+    form.appendChild(h3);
+
+    const inputs = {};
+
+    for (const [key, config] of Object.entries(taskTemplate)) {
+        const p = document.createElement('p');
+        const input = document.createElement('input');
+        const label = document.createElement('label');
+
+        label.setAttribute('for', `task_${key}`);
+        label.textContent = config.prompt;
+        input.id = `task_${key}`;
+        input.placeholder = config.prompt;
+        input.value = currentValues[key] ?? '';
+
+        if (key.toLowerCase().includes('date')) {
+            input.type = 'date';
+        }
+
+        inputs[key] = input;
+
+        p.appendChild(label);
+        p.appendChild(input);
+        form.appendChild(p);
+    }
+
+    const p = document.createElement('p');
+    const saveBtn = document.createElement('button');
+    const cancelBtn = document.createElement('button');
+
+    saveBtn.type = 'submit';
+    saveBtn.textContent = 'Save Changes';
+
+    cancelBtn.type = 'button';
+    cancelBtn.textContent = 'Cancel';
+    cancelBtn.addEventListener('click', () => {
+        modal.close();
+        modal.remove();
+    });
+
+    p.appendChild(saveBtn);
+    p.appendChild(cancelBtn);
+    form.appendChild(p);
+
+    modal.appendChild(form);
+    document.body.appendChild(modal);
+    modal.show();
+
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const updates = {};
+        for (const [key] of Object.entries(taskTemplate)) {
+            updates[key] = inputs[key].value.trim();
+        }
+
+        app.editTask(currentProject, taskIndex, updates);
+
+        modal.close();
+        modal.remove();
+
+        renderTaskList(currentProject);
+    });
+}
 
 function renderProjectList() {
     projectListEl.innerHTML = '';
@@ -203,20 +279,7 @@ function renderTaskList(projectName) {
         const editBtn = document.createElement('button');
         editBtn.textContent = '✏️';
         editBtn.addEventListener('click', () => {
-            const currentValues = app.getTaskDataForEdit(projectName, index);
-            if (!currentValues) return;
-
-            const updates = {};
-            for (const [key, config] of Object.entries(taskTemplate)) {
-                const userInput = prompt(`Edit: ${config.prompt}`, currentValues[key]);
-                if (userInput !== null) {
-                    const trimmed = userInput.trim();
-                    updates[key] = trimmed;
-                }
-            }
-
-            app.editTask(projectName, index, updates);
-            renderTaskList(projectName);
+            openEditTaskModal(projectName, index)
         });
 
         const deleteBtn = document.createElement('button');
@@ -228,12 +291,26 @@ function renderTaskList(projectName) {
 
         const detailsBtn = document.createElement('button');
         detailsBtn.textContent = 'ℹ️';
+
+        const detailsDiv = document.createElement('div');
+        detailsDiv.className = 'task-details';
+        detailsDiv.style.display = 'none';
+        detailsDiv.style.marginTop = '0.5em';
+        detailsDiv.style.fontSize = '0.9em';
+        detailsDiv.style.color = '#444';
+
         detailsBtn.addEventListener('click', () => {
-            const detail = app.getTaskDetails(projectName, index);
-            alert(detail);
+            if (detailsDiv.style.display === 'none') {
+                const detail = app.getTaskDetails(projectName, index);
+                detailsDiv.textContent = detail.split('\n')[1]; // only description
+                detailsDiv.style.display = 'block';
+            } else {
+                detailsDiv.style.display = 'none';
+            }
         });
 
         div.appendChild(span);
+        div.appendChild(detailsDiv);
         div.appendChild(completeBtn);
         div.appendChild(editBtn);
         div.appendChild(deleteBtn);

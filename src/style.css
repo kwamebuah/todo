@@ -73,3 +73,10 @@ button:disabled {
     color: #666;
     cursor: not-allowed;
 }
+
+.task-details {
+    padding: 0.3em 0 0.3em 1em;
+    margin-top: 0.4em;
+    border-left: 3px solid #ddd;
+    font-style: italic;
+}
