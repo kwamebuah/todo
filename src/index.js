@@ -1,6 +1,7 @@
 import './style.css';
 import { ToDoApp } from "./ToDoApp.js";
 import { taskTemplate } from "./taskTemplate.js";
+import { add } from 'date-fns';
 
 const app = new ToDoApp();
 let currentProject = app.getDefaultProjectName();
@@ -20,13 +21,53 @@ renderTaskList(currentProject);
 renderTaskForm();
 
 newProjectBtn.addEventListener('click', () => {
-    const name = prompt('Enter new project name:');
-    if (!name?.trim()) return;
+    const modal = document.createElement('dialog');
+    const form = document.createElement('form');
+    const h3 = document.createElement('h3');
+    const p1 = document.createElement('p');
+    const p2 = document.createElement('p');
+    const label = document.createElement('label');
+    const input = document.createElement('input');
+    const subBtn = document.createElement('button');
+    const cancelBtn = document.createElement('button');
 
-    app.addProject(name.trim());
-    currentProject = name.trim();
-    renderProjectList();
-    renderTaskList(currentProject);
+    form.classList.add('new-project-form');
+    form.setAttribute('method', 'dialog');
+    h3.textContent = 'New Project';
+    label.setAttribute('for', 'new-project');
+    label.textContent = 'Project Name: ';
+    input.setAttribute('name', 'new-project');
+    input.setAttribute('id', 'new-project');
+    subBtn.setAttribute('type', 'submit');
+    subBtn.textContent = 'Add';
+    cancelBtn.setAttribute('value', 'cancel');
+    cancelBtn.setAttribute('formmethod', 'dialog');
+    cancelBtn.textContent = 'Cancel';
+
+    p1.appendChild(label);
+    p1.appendChild(input);
+    p2.appendChild(subBtn);
+    p2.appendChild(cancelBtn);
+    form.appendChild(h3);
+    form.appendChild(p1);
+    form.appendChild(p2);
+    modal.appendChild(form);
+    document.body.appendChild(modal);
+
+    modal.showModal();
+
+    subBtn.addEventListener('click', (event) => {
+        event.preventDefault();
+        const name = input.value;
+        if (!name?.trim()) return;
+
+        app.addProject(name.trim());
+        currentProject = name.trim();
+        renderProjectList();
+        renderTaskList(currentProject);
+
+        modal.close();
+    });
 });
 
 function renderTaskForm() {
