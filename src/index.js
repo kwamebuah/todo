@@ -10,9 +10,6 @@ const projectListEl = document.querySelector('.project-list');
 const newProjectBtn = document.querySelector('.new-project-btn');
 const projectTitleEl = document.querySelector('.project-title');
 const taskListContainer = document.querySelector('.task-list-container');
-const taskTitle = document.getElementById('taskTitle');
-const taskDue = document.getElementById('taskDue');
-const taskDesc = document.getElementById('taskDesc');
 const addTaskBtn = document.getElementById('addTaskBtn');
 
 // Initial render
