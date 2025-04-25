@@ -42,6 +42,11 @@ newProjectBtn.addEventListener('click', () => {
     cancelBtn.setAttribute('formmethod', 'dialog');
     cancelBtn.textContent = 'Cancel';
 
+    cancelBtn.addEventListener('click', () => {
+        modal.close();
+        modal.remove();
+    });
+
     p1.appendChild(label);
     p1.appendChild(input);
     p2.appendChild(submitBtn);
