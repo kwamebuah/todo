@@ -1,7 +1,7 @@
 import './style.css';
 import { ToDoApp } from "./ToDoApp.js";
 import { taskTemplate } from "./taskTemplate.js";
-import { add } from 'date-fns';
+// import { add } from 'date-fns';
 
 const app = new ToDoApp();
 let currentProject = app.getDefaultProjectName();
