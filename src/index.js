@@ -246,8 +246,14 @@ function renderProjectList() {
         const a = document.createElement('a');
         a.href = '#';
         a.textContent = name;
+
+        if (name === currentProject) {
+            a.classList.add('active');
+        }
+
         a.addEventListener('click', () => {
             currentProject = name;
+            renderProjectList();
             renderTaskList(currentProject);
         });
 
