@@ -37,6 +37,7 @@ newProjectBtn.addEventListener('click', () => {
     input.setAttribute('id', 'new-project');
     submitBtn.setAttribute('type', 'submit');
     submitBtn.textContent = 'Add';
+    submitBtn.disabled = true;
     cancelBtn.setAttribute('value', 'cancel');
     cancelBtn.setAttribute('formmethod', 'dialog');
     cancelBtn.textContent = 'Cancel';
@@ -50,6 +51,10 @@ newProjectBtn.addEventListener('click', () => {
     form.appendChild(p2);
     modal.appendChild(form);
     document.body.appendChild(modal);
+
+    input.addEventListener('input', ()=> {
+        submitBtn.disabled = !input.value.trim();
+    });
 
     modal.showModal();
 
