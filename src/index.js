@@ -57,7 +57,7 @@ newProjectBtn.addEventListener('click', () => {
     modal.appendChild(form);
     document.body.appendChild(modal);
 
-    input.addEventListener('input', ()=> {
+    input.addEventListener('input', () => {
         submitBtn.disabled = !input.value.trim();
     });
 
@@ -272,7 +272,7 @@ function renderTaskList(projectName) {
     projectTitleEl.textContent = `${projectName} Tasks`;
     taskListContainer.innerHTML = '';
 
-    const tasks = app.getProjectTasks(projectName)
+    const tasks = app.getProjectTasks(projectName);
 
     tasks.forEach((summary, index) => {
         const div = document.createElement('div');
@@ -281,8 +281,11 @@ function renderTaskList(projectName) {
             div.classList.add('completed');
         }
 
-        const span = document.createElement('span');
-        span.textContent = summary;
+        const para = document.createElement('p');
+        para.textContent = summary;
+
+        const buttonContainer = document.createElement('p');
+        buttonContainer.classList.add('task-buttons');
 
         const completeBtn = document.createElement('button');
         completeBtn.textContent = '✅';
@@ -324,12 +327,19 @@ function renderTaskList(projectName) {
             }
         });
 
-        div.appendChild(span);
+        buttonContainer.appendChild(completeBtn);
+        buttonContainer.appendChild(editBtn);
+        buttonContainer.appendChild(deleteBtn);
+        buttonContainer.appendChild(detailsBtn);
+
+        div.appendChild(para);
         div.appendChild(detailsDiv);
-        div.appendChild(completeBtn);
-        div.appendChild(editBtn);
-        div.appendChild(deleteBtn);
-        div.appendChild(detailsBtn);
+        div.appendChild(buttonContainer);
+        
+        // div.appendChild(completeBtn);
+        // div.appendChild(editBtn);
+        // div.appendChild(deleteBtn);
+        // div.appendChild(detailsBtn);
 
         taskListContainer.appendChild(div);
     });
