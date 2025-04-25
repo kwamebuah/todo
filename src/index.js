@@ -69,6 +69,7 @@ newProjectBtn.addEventListener('click', () => {
         renderTaskList(currentProject);
 
         modal.close();
+        modal.remove();
     });
 });
 
