@@ -120,7 +120,7 @@ function openTaskModal() {
 
     modal.appendChild(form);
     document.body.appendChild(modal);
-    modal.show();
+    modal.showModal();
 
     const validateForm = () => {
         const isValid = Object.entries(taskTemplate).every(([key, config]) => {
