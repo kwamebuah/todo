@@ -27,6 +27,7 @@ newProjectBtn.addEventListener('click', () => {
     const submitBtn = document.createElement('button');
     const cancelBtn = document.createElement('button');
 
+    modal.classList.add('project-modal');
     form.classList.add('new-project-form');
     form.setAttribute('method', 'dialog');
     h3.textContent = 'New Project';
