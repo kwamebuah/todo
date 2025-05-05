@@ -1,9 +1,9 @@
 export class Task {
-    constructor({ title, dueDate, description }) {
+    constructor({ title, dueDate, description, complete = false }) {
         this.title = title;
         this.dueDate = dueDate ? new Date(dueDate) : null;
         this.description = description?.trim() || '(No description provided)';
-        this.complete = false;
+        this.complete = complete;
     }
 
     toggleCompleted() { 

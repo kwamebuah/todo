@@ -8,10 +8,61 @@ export class ToDoApp {
         this.taskManager = new TaskManager();
         this.defaultProjectName = 'Default';
         this.projectManager.addProject(this.defaultProjectName);
-    } 
+    }
+
+    saveToLocalStorage() {
+        const data = {
+            projects: {},
+        };
+
+        for (const name of this.projectManager.listProjects()) {
+            const project = this.projectManager.getProject(name);
+            data.projects[name] = {
+                name: project.name,
+                tasks: project.tasks.map(task => {
+                    const taskData = {};
+                    for (const key of Object.keys(taskTemplate)) {
+                        let value = task[key];
+                        taskData[key] = value instanceof Date ? value.toISOString() : value;
+                    }
+                    taskData.complete = task.complete;
+                    return taskData;
+                }),
+            };
+        }
+
+        localStorage.setItem('todoAppData', JSON.stringify(data));
+    }
+
+    loadFromLocalStorage() {
+        const data = JSON.parse(localStorage.getItem('todoAppData'));
+        if (!data || !data.projects) return;
+
+        for (const [name, projectData] of Object.entries(data.projects)) {
+            this.projectManager.addProject(name);
+            const project = this.projectManager.getProject(name);
+
+            for (const taskData of projectData.tasks) {
+                const formattedData = {};
+                for (const key of Object.keys(taskTemplate)) {
+                    if (key in taskData) {
+                        formattedData[key] = key.includes('Date') && taskData[key]
+                            ? new Date(taskData[key])
+                            : taskData[key];
+                    }
+                }
+
+                this.taskManager.restoreTask(project, {
+                    ...formattedData,
+                    complete: !!taskData.complete
+                });
+            }
+        }
+    }
 
     addProject(name) {
         this.projectManager.addProject(name);
+        this.saveToLocalStorage();
     }
 
     getProjectNames() {
@@ -22,6 +73,7 @@ export class ToDoApp {
         const project = this.projectManager.getProject(projectName);
         if (project) {
             this.taskManager.addTask(project, taskData);
+            this.saveToLocalStorage();
         }
     }
 
@@ -29,6 +81,7 @@ export class ToDoApp {
         const project = this.projectManager.getProject(projectName);
         if (project) {
             this.taskManager.toggleTaskCompleted(project, taskIndex);
+            this.saveToLocalStorage();
         }
     }
 
@@ -53,6 +106,7 @@ export class ToDoApp {
         const project = this.projectManager.getProject(projectName);
         if (project) {
             this.taskManager.editTask(project, taskIndex, updates);
+            this.saveToLocalStorage();
         }
     }
 
@@ -60,6 +114,7 @@ export class ToDoApp {
         const project = this.projectManager.getProject(projectName);
         if (project) {
             this.taskManager.deleteTask(project, taskIndex);
+            this.saveToLocalStorage();
         }
     }
 
@@ -68,6 +123,7 @@ export class ToDoApp {
         const toProject = this.projectManager.getProject(projectToName);
         if (fromProject && toProject) {
             this.taskManager.transferTaskToProject(fromProject, toProject, taskIndex);
+            this.saveToLocalStorage();
         }
     }
 
@@ -83,13 +139,13 @@ export class ToDoApp {
     addTasktoDefaultProject(taskData) {
         this.addTaskToProject(this.defaultProjectName, taskData);
     }
-    
+
     getTaskDataForEdit(projectName, index) {
         const project = this.projectManager.getProject(projectName);
         const task = project?.getTask(index);
-    
+
         if (!task) return null;
-    
+
         const data = {};
         for (const key of Object.keys(taskTemplate)) {
             const value = task[key];

@@ -52,4 +52,10 @@ export class TaskManager {
             project1.deleteTask(taskIndex);
         }
     }
+
+    restoreTask(project, taskData) {
+        const task = new Task(taskData);
+        task.complete = !!taskData.complete;
+        project.addTask(task);
+    }
 }

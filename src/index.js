@@ -4,6 +4,8 @@ import { taskTemplate } from "./taskTemplate.js";
 // import { add } from 'date-fns';
 
 const app = new ToDoApp();
+app.loadFromLocalStorage();
+
 let currentProject = app.getDefaultProjectName();
 
 const projectListEl = document.querySelector('.project-list');
