@@ -21,4 +21,8 @@ export class ProjectManager {
     listProjects() {
         return Object.keys(this.projects);
     }
+
+    deleteProject(name) {
+        delete this.projects[name];
+    }
 }

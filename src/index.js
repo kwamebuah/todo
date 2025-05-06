@@ -1,6 +1,7 @@
 import './style.css';
 import { ToDoApp } from "./ToDoApp.js";
 import { taskTemplate } from "./taskTemplate.js";
+import { de } from 'date-fns/locale';
 // import { add } from 'date-fns';
 
 const app = new ToDoApp();
@@ -247,11 +248,13 @@ function renderProjectList() {
     projects.forEach(name => {
         const li = document.createElement('li');
         const a = document.createElement('a');
+        const deleteBtn = document.createElement('span');
+
         a.href = '#';
         a.textContent = name;
 
         if (name === currentProject) {
-            a.classList.add('active');
+            li.classList.add('active');
         }
 
         a.addEventListener('click', () => {
@@ -260,7 +263,63 @@ function renderProjectList() {
             renderTaskList(currentProject);
         });
 
+        const modal = document.createElement('div');
+        modal.classList.add('confirm-modal', 'hidden');
+        const div = document.createElement('div');
+        div.classList.add('confirm-modal-content');
+        const p = document.createElement('p');
+        p.classList.add('confirm-message');
+        const confirmYes = document.createElement('button');
+        const confirmNo = document.createElement('button');
+        confirmYes.textContent = 'Yes';
+        confirmNo.textContent = 'No';
+
+        div.appendChild(p);
+        div.appendChild(confirmYes);
+        div.appendChild(confirmNo);
+        modal.appendChild(div);
+        document.body.appendChild(modal);
+
+        function showModal(message, onConfirm) {
+            p.textContent = message;
+            modal.classList.remove('hidden');
+
+            function cleanUp() {
+                modal.classList.add('hidden');
+                confirmYes.removeEventListener('click', yesHandler);
+                confirmNo.removeEventListener('click', noHandler);
+            }
+
+            function yesHandler() {
+                cleanUp();
+                onConfirm();
+            }
+
+            function noHandler() {
+                cleanUp();
+            }
+
+            confirmYes.addEventListener('click', yesHandler);
+            confirmNo.addEventListener('click', noHandler);
+        }
+        
+
+        deleteBtn.textContent = '🗑️';
+        deleteBtn.addEventListener('click', (e) => {
+            e.stopPropagation(); // we don't want to switch to this project
+            
+            showModal(`Delete project "${name}"?`, () => {
+                app.deleteProject(name);
+                if (name === currentProject) {
+                    currentProject = app.getDefaultProjectName();
+                }
+                renderProjectList();
+                renderTaskList(currentProject);
+            });
+        });
+
         li.appendChild(a);
+        li.appendChild(deleteBtn);
         projectListEl.appendChild(li);
     });
 }

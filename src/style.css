@@ -33,28 +33,39 @@ ul {
     list-style: none;
 }
 
-ul a {
-    display: block;
+ul li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 0.5rem;
     height: 2.5rem;
+}
+
+ul li:hover {
+    background-color: rgb(201, 220, 227);
+    box-shadow: 0 1px 2px rgba(98, 98, 98, 0.5);
+}
+
+ul li.active {
+    background-color: lightblue;
+    box-shadow: 0 1px 2px rgba(98, 98, 98, 0.5);
+}
+
+ul li a {
+    flex-grow: 1;
+    text-align: left;
     line-height: 2.5rem;
-    text-align: center;
     font-size: 1.2rem;
     text-decoration: none;
-    margin: auto;
+    padding-left: 0.5rem;
 }
 
 ul a:visited {
     color: inherit;
 }
 
-ul a:hover {
-    background-color: rgb(201, 220, 227);
-    box-shadow: 0 1px 2px rgba(98, 98, 98, 0.5);
-}
-
-ul a.active {
-    background-color: lightblue;
-    box-shadow: 0 1px 2px rgba(98, 98, 98, 0.5);
+ul li span:hover {
+    cursor: pointer;
 }
 
 nav button {
@@ -68,6 +79,8 @@ nav button {
     margin-top: 2rem;
     font-size: 1rem;
 }
+
+
 
 nav button:hover {
     cursor: pointer;
@@ -130,6 +143,29 @@ nav button:hover {
     width: 40%;
     height: 2rem;
     border: none;
+}
+
+.confirm-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.confirm-modal.hidden {
+    display: none;
+}
+
+.confirm-modal-content {
+    background: white;
+    padding: 1em 2em;
+    border-radius: 5px;
+    text-align: center;
 }
 
 .completed {

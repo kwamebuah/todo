@@ -69,6 +69,11 @@ export class ToDoApp {
         return this.projectManager.listProjects();
     }
 
+    deleteProject(projectName) {
+        this.projectManager.deleteProject(projectName);
+        this.saveToLocalStorage();
+    }
+
     addTaskToProject(projectName, taskData) {
         const project = this.projectManager.getProject(projectName);
         if (project) {
