@@ -389,11 +389,6 @@ function renderTaskList(projectName) {
         div.appendChild(para);
         div.appendChild(detailsDiv);
         div.appendChild(buttonContainer);
-        
-        // div.appendChild(completeBtn);
-        // div.appendChild(editBtn);
-        // div.appendChild(deleteBtn);
-        // div.appendChild(detailsBtn);
 
         taskListContainer.appendChild(div);
     });
