@@ -117,6 +117,7 @@ nav button:hover {
 .project-modal input,
 .project-modal form label,
 .task-modal input,
+.task-modal select,
 .task-modal form label {
     display: block;
     width: 80%;
@@ -241,4 +242,9 @@ main {
     margin-top: 0.4em;
     border-left: 3px solid #ddd;
     font-style: italic;
+}
+
+.task.high-priority {
+    border-left: 4px solid red;
+    background-color: #ffe5e5;
 }

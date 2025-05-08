@@ -53,6 +53,11 @@ export class TaskManager {
         }
     }
 
+    getTaskPriority(project, taskIndex) {
+        const task = project.getTask(taskIndex);
+        return task?.priority ?? 'normal';
+    }
+
     restoreTask(project, taskData) {
         const task = new Task(taskData);
         task.complete = !!taskData.complete;

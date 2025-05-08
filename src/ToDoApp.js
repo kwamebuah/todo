@@ -160,4 +160,10 @@ export class ToDoApp {
         }
         return data;
     }
+
+    getTaskPriority(projectName, taskIndex) {
+        const project = this.projectManager.getProject(projectName);
+        const priority = this.taskManager.getTaskPriority(project, taskIndex);
+        return priority;
+    }
 }

@@ -88,17 +88,26 @@ function openTaskModal() {
 
     for (const [key, config] of Object.entries(taskTemplate)) {
         const p = document.createElement('p');
-        const input = document.createElement('input');
+        let input;
         const label = document.createElement('label');
+
+        if (key === 'priority') {
+            input = document.createElement('select');
+            const normalOption = new Option('Normal', 'normal');
+            const highOption = new Option('High', 'high');
+            input.append(normalOption, highOption);
+        }
+        else {
+            input = document.createElement('input');
+            if (key.toLowerCase().includes('date')) {
+                input.type = 'date';
+            }
+        }
 
         label.setAttribute('for', `task_${key}`);
         label.textContent = config.prompt;
         input.id = `task_${key}`;
         input.placeholder = config.prompt;
-
-        if (key.toLowerCase().includes('date')) {
-            input.type = 'date';
-        }
 
         inputs[key] = input;
 
@@ -180,18 +189,28 @@ function openEditTaskModal(projectName, taskIndex) {
 
     for (const [key, config] of Object.entries(taskTemplate)) {
         const p = document.createElement('p');
-        const input = document.createElement('input');
+        let input;
         const label = document.createElement('label');
+
+        if (key === 'priority') {
+            input = document.createElement('select');
+            const normalOption = new Option('Normal', 'normal');
+            const highOption = new Option('High', 'high');
+            input.append(normalOption, highOption);
+            input.value = currentValues[key] ?? 'normal';
+        }
+        else {
+            input = document.createElement('input');
+            if (key.toLowerCase().includes('date')) {
+                input.type = 'date';
+            }
+        }
 
         label.setAttribute('for', `task_${key}`);
         label.textContent = config.prompt;
         input.id = `task_${key}`;
         input.placeholder = config.prompt;
         input.value = currentValues[key] ?? '';
-
-        if (key.toLowerCase().includes('date')) {
-            input.type = 'date';
-        }
 
         inputs[key] = input;
 
@@ -300,12 +319,12 @@ function renderProjectList() {
             confirmYes.addEventListener('click', yesHandler);
             confirmNo.addEventListener('click', noHandler);
         }
-        
+
 
         deleteBtn.textContent = '🗑️';
         deleteBtn.addEventListener('click', (e) => {
             e.stopPropagation(); // we don't want to switch to this project
-            
+
             showModal(`Delete project "${name}"?`, () => {
                 app.deleteProject(name);
                 if (name === currentProject) {
@@ -331,6 +350,12 @@ function renderTaskList(projectName) {
     tasks.forEach((summary, index) => {
         const div = document.createElement('div');
         div.className = 'task';
+
+        const priority = app.getTaskPriority(projectName, index);
+        if (priority === 'high') {
+            div.classList.add('high-priority');
+        }
+
         if (app.getTaskStatus(projectName, index)) {
             div.classList.add('completed');
         }
