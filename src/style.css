@@ -92,7 +92,8 @@ nav button:hover {
 }
 
 .project-modal,
-.task-modal {
+.task-modal,
+.confirm-modal-content {
     margin: 4rem auto;
     padding: 1.5rem;
     border: none;
@@ -120,7 +121,7 @@ nav button:hover {
 .task-modal select,
 .task-modal form label {
     display: block;
-    width: 80%;
+    width: 90%;
     margin: 0 auto;
 }
 
@@ -129,6 +130,13 @@ nav button:hover {
     display: block;
     margin: 0 auto;
     margin-bottom: 0.3em;
+}
+
+.project-modal form input,
+.task-modal form input,
+.task-modal select {
+    font-size: 0.9rem;
+    padding: 0.2rem 0.2rem;
 }
 
 .project-modal p:last-child,
@@ -140,7 +148,8 @@ nav button:hover {
 }
 
 .project-modal button,
-.task-modal button {
+.task-modal button,
+.confirm-modal-content button {
     width: 40%;
     height: 2rem;
     border: none;
@@ -152,10 +161,7 @@ nav button:hover {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background: rgba(0, 0, 0, 0.4);
 }
 
 .confirm-modal.hidden {
@@ -164,9 +170,17 @@ nav button:hover {
 
 .confirm-modal-content {
     background: white;
-    padding: 1em 2em;
-    border-radius: 5px;
     text-align: center;
+}
+
+.confirm-modal-content p {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.confirm-modal-content button {
+    margin: 1rem 1rem;
+    margin-bottom: 1rem;
 }
 
 .completed {
