@@ -262,6 +262,24 @@ function renderProjectList() {
     projectListEl.innerHTML = '';
     const projects = app.getProjectNames();
 
+    // Create delete project modal
+    const modal = document.createElement('div');
+    modal.classList.add('confirm-modal', 'hidden');
+    const div = document.createElement('div');
+    div.classList.add('confirm-modal-content');
+    const p = document.createElement('p');
+    p.classList.add('confirm-message');
+    const confirmYes = document.createElement('button');
+    const confirmNo = document.createElement('button');
+    confirmYes.textContent = 'Yes';
+    confirmNo.textContent = 'No';
+
+    div.appendChild(p);
+    div.appendChild(confirmYes);
+    div.appendChild(confirmNo);
+    modal.appendChild(div);
+    document.body.appendChild(modal);
+
     projects.forEach(name => {
         const li = document.createElement('li');
         const a = document.createElement('a');
@@ -279,23 +297,6 @@ function renderProjectList() {
             renderProjectList();
             renderTaskList(currentProject);
         });
-
-        const modal = document.createElement('div');
-        modal.classList.add('confirm-modal', 'hidden');
-        const div = document.createElement('div');
-        div.classList.add('confirm-modal-content');
-        const p = document.createElement('p');
-        p.classList.add('confirm-message');
-        const confirmYes = document.createElement('button');
-        const confirmNo = document.createElement('button');
-        confirmYes.textContent = 'Yes';
-        confirmNo.textContent = 'No';
-
-        div.appendChild(p);
-        div.appendChild(confirmYes);
-        div.appendChild(confirmNo);
-        modal.appendChild(div);
-        document.body.appendChild(modal);
 
         function showModal(message, onConfirm) {
             p.textContent = message;
