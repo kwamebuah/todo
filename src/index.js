@@ -1,8 +1,6 @@
 import './style.css';
 import { ToDoApp } from "./ToDoApp.js";
 import { taskTemplate } from "./taskTemplate.js";
-import { de } from 'date-fns/locale';
-// import { add } from 'date-fns';
 
 const app = new ToDoApp();
 app.loadFromLocalStorage();
