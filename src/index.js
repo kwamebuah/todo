@@ -39,9 +39,13 @@ newProjectBtn.addEventListener('click', () => {
     submitBtn.setAttribute('type', 'submit');
     submitBtn.textContent = 'Add';
     submitBtn.disabled = true;
-    cancelBtn.setAttribute('value', 'cancel');
-    cancelBtn.setAttribute('formmethod', 'dialog');
+    cancelBtn.type = 'button';
     cancelBtn.textContent = 'Cancel';
+
+    cancelBtn.addEventListener('click', () => {
+        modal.close();
+        modal.remove();
+    });
 
     p1.appendChild(label);
     p1.appendChild(input);
@@ -71,6 +75,12 @@ newProjectBtn.addEventListener('click', () => {
 
         modal.close();
         modal.remove();
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            modal.remove();
+        }
     });
 });
 
@@ -167,6 +177,12 @@ function openTaskModal() {
         modal.remove();
 
         renderTaskList(currentProject);
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            modal.remove();
+        }
     });
 }
 
