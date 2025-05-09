@@ -353,7 +353,9 @@ function renderProjectList() {
         });
 
         li.appendChild(a);
-        li.appendChild(deleteBtn);
+        if (a.textContent !== app.getDefaultProjectName()) {
+            li.appendChild(deleteBtn);
+        }
         projectListEl.appendChild(li);
     });
 }
